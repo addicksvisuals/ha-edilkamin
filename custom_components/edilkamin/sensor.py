@@ -95,7 +95,7 @@ class EdilkaminTemperatureBoiler(SensorEntity):
     @property
     def unique_id(self):
         """Return a unique_id for this entity."""
-        return f"{self.mac_address}_temperature"
+        return f"{self.mac_address}_temperature_boiler"
 
     @property
     def state(self):
@@ -105,7 +105,7 @@ class EdilkaminTemperatureBoiler(SensorEntity):
     async def async_update(self) -> None:
         """Fetch new state data for the sensor."""
         try:
-            self._state = await self.api.get_temperature()
+            self._state = await self.api.get_temperature_boiler()
         except HttpException as err:
             _LOGGER.error(str(err))
             return
