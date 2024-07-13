@@ -27,6 +27,7 @@ async def async_setup_entry(hass, config_entry, async_add_devices):
 
     async_add_devices(
         [
+            EdilkaminTemperaturBoiler(async_api),
             EdilkaminTemperatureSensor(async_api),
             EdilkaminFan1Sensor(async_api),
             EdilkaminAlarmSensor(async_api),
@@ -36,6 +37,43 @@ async def async_setup_entry(hass, config_entry, async_add_devices):
 
 
 class EdilkaminTemperatureSensor(SensorEntity):
+    """Representation of a Sensor."""
+
+    def __init__(self, api: EdilkaminAsyncApi):
+        """Initialize the sensor."""
+        self._state = None
+        self.api = api
+        self.mac_address = api.get_mac_address()
+
+    @property
+    def device_class(self):
+        """Return the class of this device, from component DEVICE_CLASSES."""
+        return DEVICE_CLASS_TEMPERATURE
+
+    @property
+    def native_unit_of_measurement(self):
+        """Return the class of this device, from component DEVICE_CLASSES."""
+        return TEMP_CELSIUS
+
+    @property
+    def unique_id(self):
+        """Return a unique_id for this entity."""
+        return f"{self.mac_address}_temperature"
+
+    @property
+    def state(self):
+        """Return the state of the sensor."""
+        return self._state
+
+    async def async_update(self) -> None:
+        """Fetch new state data for the sensor."""
+        try:
+            self._state = await self.api.get_temperature()
+        except HttpException as err:
+            _LOGGER.error(str(err))
+            return
+
+class EdilkaminTemperatureBoiler(SensorEntity):
     """Representation of a Sensor."""
 
     def __init__(self, api: EdilkaminAsyncApi):
