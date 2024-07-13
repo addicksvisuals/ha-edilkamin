@@ -32,7 +32,7 @@ class EdilkaminAsyncApi:
         """Get the mac address."""
         return self.mac_address
 
-    async def get_temperature(self):
+    async def get_temperature_boiler(self):
         """Get the temperature."""
         _LOGGER.debug("Get temperature")
         response = await self.execute_get_request()
