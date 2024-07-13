@@ -27,10 +27,19 @@ class EdilkaminAsyncApi:
         self.session = session
         self.auth = Auth(self.session, self.refresh_token, client_id=client_id)
 
+
     def get_mac_address(self):
         """Get the mac address."""
         return self.mac_address
 
+    async def get_temperature(self):
+        """Get the temperature."""
+        _LOGGER.debug("Get temperature")
+        response = await self.execute_get_request()
+        result = response.get("status").get("temperatures").get("boiler")
+        _LOGGER.debug("Get temperature response  = %s", result)
+        return result
+        
     async def get_temperature(self):
         """Get the temperature."""
         _LOGGER.debug("Get temperature")
